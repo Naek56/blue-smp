@@ -1,52 +1,39 @@
 # BLUE SMP
 
-Site web du serveur **Minecraft SMP « BLUE SMP »**. Une landing page (page unique)
-en **bleu & noir** avec un fond bleu dégradé glacé, pour présenter le serveur,
-afficher l'IP de connexion et inviter les joueurs à rejoindre la communauté.
+Site web du serveur **Minecraft SMP « BLUE SMP »**. Base épurée : fond blanc avec
+grille légère + dégradé violet, navbar minimaliste, logo du serveur, et une police
+au style industriel façon **Neville Brody** (approximée avec *Chakra Petch*, les
+polices originales de Neville Brody étant commerciales).
 
-## Aperçu
+## Stack
 
-- **Thème bleu & noir** uniquement, fond bleu dégradé (façon glace / logo)
-- Polices **« Press Start 2P »** (pixel, façon Minecraft « Mojangles ») pour les
-  titres et **« Fredoka »** (ronde, façon « Oddbods ») pour le texte
-- Boutons et panneaux façon **blocs Minecraft** (ombres dures, reliefs pixel)
-- Particules de neige bleues animées dans le hero
-- Responsive (menu mobile inclus)
+`Vite` · `React` · `TypeScript` · `Tailwind CSS` · structure **shadcn** (`@/` alias,
+`components/ui`, `lib/utils`) · `lucide-react`.
 
-## Sections
+## Structure des composants
 
-1. **Hero** — logo BLUE SMP, IP à copier (Java + Bedrock), stats du serveur
-2. **Le serveur** — pourquoi nous rejoindre (survie, économie, communauté, events…)
-3. **Rejoindre** — 3 étapes pour se connecter
-4. **FAQ** — questions fréquentes
-5. **Footer** — IP, version, Discord
+Le chemin par défaut des composants est **`src/components/ui`** (convention shadcn).
+Ce dossier est important : la CLI shadcn (`npx shadcn@latest add ...`) y installe les
+primitives, et l'alias `@/components/ui` garde les imports cohérents.
 
-## ⚙️ À personnaliser
+- `src/components/ui/gradient-blur-bg.tsx` — fond blanc + grille + dégradé violet
+- `src/components/ui/navbar.tsx` — navbar pilule (Home / About / Contact / Login)
+- `src/lib/utils.ts` — helper `cn()` (clsx + tailwind-merge)
+- `src/BlueSmp.tsx` — page d'accueil (assemble le fond, la navbar et le logo)
 
-Ouvre `src/BlueSmp.tsx` et modifie les constantes en haut du fichier :
+## Logo
 
-```ts
-const SERVER_IP    = "play.bluesmp.net";           // ← ton IP réelle
-const BEDROCK_PORT = "19132";                      // ← ton port Bedrock
-const DISCORD_URL  = "https://discord.gg/bluesmp"; // ← ton lien Discord
-const MC_VERSION   = "1.21+";                       // ← ta version Minecraft
-```
-
-**Logo :** dépose ton image dans `public/blue-smp-logo.png`. Si le fichier est
-absent, un titre « BLUE SMP » en CSS s'affiche automatiquement à la place.
+`public/blue-smp-logo.png` — logo du serveur, fond rendu transparent (trous blancs
+des lettres inclus) pour s'intégrer sur n'importe quel fond.
 
 ## Développement
 
 ```bash
 npm install
-npm run dev      # serveur de dev (http://localhost:5173)
+npm run dev      # http://localhost:5173
 npm run build    # build de production dans dist/
 npm run preview  # prévisualiser le build
 ```
-
-## Stack
-
-Vite · React · TypeScript · Tailwind CSS · lucide-react
 
 ---
 
