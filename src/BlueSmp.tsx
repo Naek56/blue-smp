@@ -44,7 +44,7 @@ function LogoTitle() {
       src={LOGO_SRC}
       alt="BLUE SMP"
       onError={() => setFailed(true)}
-      className="mb-4 w-full max-w-md drop-shadow-[0_10px_30px_rgba(0,0,0,0.5)]"
+      className="mb-6 w-full max-w-xl drop-shadow-[0_14px_40px_rgba(0,0,0,0.55)]"
     />
   );
 }
