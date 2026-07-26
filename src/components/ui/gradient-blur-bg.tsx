@@ -7,7 +7,7 @@ interface GradientBlurBgProps {
 }
 
 /**
- * Fond blanc avec grille légère + dégradé radial violet (haut-droite).
+ * Fond blanc avec grille légère + dégradé radial bleu clair (haut-droite).
  * Le contenu passé en `children` est rendu au-dessus du fond.
  */
 export const GradientBlurBg = ({ children, className }: GradientBlurBgProps) => {
@@ -20,7 +20,7 @@ export const GradientBlurBg = ({ children, className }: GradientBlurBgProps) => 
           backgroundImage: `
             linear-gradient(to right, #f0f0f0 1px, transparent 1px),
             linear-gradient(to bottom, #f0f0f0 1px, transparent 1px),
-            radial-gradient(circle 800px at 100% 200px, #d5c5ff, transparent)
+            radial-gradient(circle 800px at 100% 200px, #bfe0ff, transparent)
           `,
           backgroundSize: "96px 64px, 96px 64px, 100% 100%",
         }}

@@ -13,11 +13,11 @@
     --secondary-foreground: 222 47% 11%;
     --muted: 210 40% 96%;
     --muted-foreground: 215 16% 47%;
-    --accent: 262 83% 74%;
+    --accent: 210 100% 74%;
     --accent-foreground: 222 47% 11%;
     --border: 214 32% 91%;
     --input: 214 32% 91%;
-    --ring: 262 83% 74%;
+    --ring: 210 100% 74%;
     --radius: 0.75rem;
   }
 
@@ -33,7 +33,7 @@
     -webkit-font-smoothing: antialiased;
   }
 
-  ::selection { background: #d5c5ff; color: #1a1030; }
+  ::selection { background: #bfe0ff; color: #0a2540; }
 }
 
 @layer utilities {
