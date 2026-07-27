@@ -42,6 +42,20 @@
   50% { transform: translateY(-14px); }
 }
 
+/* aurores + rayons du fond */
+@keyframes lightdrift {
+  0%, 100% { transform: translateY(0); opacity: var(--o, 0.5); }
+  50% { transform: translateY(28px); opacity: calc(var(--o, 0.5) * 1.25); }
+}
+@keyframes auroraA {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  50% { transform: translate(6%, 5%) scale(1.15); }
+}
+@keyframes auroraB {
+  0%, 100% { transform: translate(0, 0) scale(1.1); }
+  50% { transform: translate(-6%, 6%) scale(1); }
+}
+
 @media (prefers-reduced-motion: reduce) {
   * { animation: none !important; }
 }
