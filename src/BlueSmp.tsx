@@ -1,83 +1,81 @@
-import GradientBlurBg from "@/components/ui/gradient-blur-bg";
+import { motion } from "framer-motion";
+import GradientWave from "@/components/ui/gradient-wave";
 import Navbar from "@/components/ui/navbar";
-import { ImageCardFan, type FanCardItem } from "@/components/ui/image-card-fan";
+import Donate from "@/components/ui/donate";
 
 /* ────────────────────────────────────────────────────────────────
-   BLUE SMP — page d'accueil (version épurée, à étoffer ensuite).
-   Fond : grille blanche + dégradé bleu clair · Police : façon Neville Brody.
+   BLUE SMP — page d'accueil.
+   Fond : vague dégradée animée (WebGL) · Police : façon Neville Brody.
    ──────────────────────────────────────────────────────────────── */
 
-/* Produits / cosmétiques — placeholders sans photo pour l'instant.
-   Remplace `src` par les vraies images quand elles seront prêtes. */
-const PRODUCTS: FanCardItem[] = [
-  {
-    id: "cape",
-    src: "/products/cape.svg",
-    title: "Cape Givrée",
-    description:
-      "Une cape aux reflets de glace qui flotte dans ton dos. Cosmétique visible par tous les joueurs.",
-  },
-  {
-    id: "grade",
-    src: "/products/grade.svg",
-    title: "Grade VIP",
-    description:
-      "Un rang exclusif avec tag coloré, accès prioritaire et avantages en jeu.",
-  },
-  {
-    id: "particules",
-    src: "/products/particules.svg",
-    title: "Particules Neige",
-    description:
-      "Un halo de flocons qui te suit partout où tu vas sur le serveur.",
-  },
-  {
-    id: "aura",
-    src: "/products/aura.svg",
-    title: "Aura Glacée",
-    description:
-      "Une aura lumineuse bleutée autour de ton personnage. L'effet le plus premium.",
-  },
-  {
-    id: "pack",
-    src: "/products/pack.svg",
-    title: "Pack Hiver",
-    description:
-      "Un lot regroupant cape, particules et aura à prix réduit. Édition limitée.",
-  },
+// Palette claire bleu/blanc : reste lisible et aérée derrière le contenu.
+const WAVE_COLORS = [
+  "#e6f1ff",
+  "#bfe0ff",
+  "#8fd0ff",
+  "#3f8cff",
+  "#cfe6ff",
+  "#ffffff",
 ];
 
 export default function BlueSmp() {
   return (
-    <GradientBlurBg>
+    <div className="relative min-h-screen">
+      {/* Fond animé fixe (vague dégradée WebGL) */}
+      <div className="fixed inset-0 -z-10">
+        <GradientWave colors={WAVE_COLORS} />
+        {/* voile blanc léger pour adoucir et garder le texte lisible */}
+        <div className="absolute inset-0 bg-white/25" />
+      </div>
+
       {/* Navbar simple en haut */}
-      <header className="flex justify-center px-4 pt-6">
+      <header className="relative z-10 flex justify-center px-4 pt-6">
         <Navbar />
       </header>
 
-      {/* Hero : logo centré */}
-      <section className="flex min-h-[calc(100vh-6rem)] flex-col items-center justify-center px-6 text-center">
-        <img
-          src="/blue-smp-logo.png"
-          alt="BLUE SMP"
-          className="w-full max-w-2xl drop-shadow-[0_20px_50px_rgba(63,140,255,0.25)]"
-        />
-      </section>
-
-      {/* Section produits / boutique — éventail de cartes */}
-      <section id="boutique" className="mx-auto w-full max-w-6xl px-6 pb-28">
-        <div className="mb-12 text-center">
-          <h2 className="font-brody text-3xl font-bold uppercase tracking-wide text-neutral-900 sm:text-4xl">
-            Boutique
-          </h2>
-          <p className="font-brody mx-auto mt-3 max-w-md text-neutral-500">
-            Capes, particules, grades et cosmétiques pour personnaliser ton
-            expérience. Survole ou clique une carte pour la révéler.
-          </p>
+      {/* Hero : logo animé (flottement + halo pulsant) */}
+      <section className="relative z-10 flex min-h-[calc(100vh-6rem)] flex-col items-center justify-center px-6 text-center">
+        <div className="relative">
+          {/* halo pulsant derrière le logo */}
+          <div
+            aria-hidden
+            className="pointer-events-none absolute left-1/2 top-1/2 h-[380px] w-[380px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[#3f8cff]/30 blur-[110px]"
+            style={{ animation: "logoglow 4s ease-in-out infinite" }}
+          />
+          <motion.img
+            src="/blue-smp-logo.png"
+            alt="BLUE SMP"
+            initial={{ opacity: 0, scale: 0.9, y: 20 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            transition={{ duration: 0.8, ease: "easeOut" }}
+            className="relative w-full max-w-2xl drop-shadow-[0_20px_50px_rgba(63,140,255,0.35)]"
+            style={{ animation: "floaty 6s ease-in-out infinite" }}
+          />
         </div>
 
-        <ImageCardFan cards={PRODUCTS} className="mx-auto max-w-5xl" />
+        {/* indication de scroll animée */}
+        <motion.a
+          href="#donate"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 1 }}
+          className="font-brody absolute bottom-8 flex flex-col items-center gap-2 text-xs uppercase tracking-[0.35em] text-neutral-500"
+        >
+          Soutenir
+          <motion.span
+            animate={{ y: [0, 8, 0] }}
+            transition={{ duration: 1.6, repeat: Infinity, ease: "easeInOut" }}
+            className="text-lg"
+          >
+            ↓
+          </motion.span>
+        </motion.a>
       </section>
-    </GradientBlurBg>
+
+      {/* Section Donate animée */}
+      <div className="relative z-10">
+        <Donate />
+      </div>
+    </div>
   );
 }
