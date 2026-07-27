@@ -1,10 +1,11 @@
 "use client";
 
 import { useState } from "react";
+import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
 
 /* ────────────────────────────────────────────────────────────────
-   Donate — version minimaliste. Branche le vrai lien dans handleDonate.
+   Donate — minimaliste et animé. Branche le vrai lien dans handleDonate.
    ──────────────────────────────────────────────────────────────── */
 
 const AMOUNTS = [5, 10, 20, 50] as const;
@@ -26,36 +27,70 @@ export function Donate({ className }: { className?: string }) {
         className,
       )}
     >
-      <h2 className="text-5xl font-black tracking-tight text-neutral-900 sm:text-6xl">
+      <motion.h2
+        initial={{ opacity: 0, y: 24 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true, margin: "-80px" }}
+        transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+        className="text-5xl font-black tracking-tight text-neutral-900 sm:text-6xl"
+      >
         Soutenir
-      </h2>
-      <p className="mx-auto mt-4 max-w-sm text-base font-medium text-neutral-500">
-        BLUE SMP est gratuit. Ton don finance l'hébergement et les events.
-      </p>
+      </motion.h2>
 
-      <div className="mt-10 grid grid-cols-4 gap-2">
+      <motion.p
+        initial={{ opacity: 0, y: 20 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true, margin: "-80px" }}
+        transition={{ duration: 0.6, delay: 0.08, ease: [0.22, 1, 0.36, 1] }}
+        className="mx-auto mt-4 max-w-sm text-base font-medium text-neutral-500"
+      >
+        BLUE SMP est gratuit. Ton don finance l'hébergement et les events.
+      </motion.p>
+
+      <motion.div
+        initial="hidden"
+        whileInView="show"
+        viewport={{ once: true, margin: "-60px" }}
+        variants={{
+          hidden: {},
+          show: { transition: { staggerChildren: 0.06, delayChildren: 0.15 } },
+        }}
+        className="mt-10 grid grid-cols-4 gap-2"
+      >
         {AMOUNTS.map((a) => (
-          <button
+          <motion.button
             key={a}
+            variants={{
+              hidden: { opacity: 0, y: 16 },
+              show: { opacity: 1, y: 0 },
+            }}
+            whileHover={{ y: -3 }}
+            whileTap={{ scale: 0.95 }}
             onClick={() => setAmount(a)}
             className={cn(
-              "rounded-xl border py-3 text-lg font-bold transition",
+              "rounded-xl border py-3 text-lg font-bold transition-colors",
               amount === a
                 ? "border-neutral-900 bg-neutral-900 text-white"
                 : "border-neutral-200 text-neutral-800 hover:border-neutral-400",
             )}
           >
             {a}€
-          </button>
+          </motion.button>
         ))}
-      </div>
+      </motion.div>
 
-      <button
+      <motion.button
+        initial={{ opacity: 0, y: 16 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true, margin: "-60px" }}
+        transition={{ duration: 0.5, delay: 0.35 }}
+        whileHover={{ scale: 1.02 }}
+        whileTap={{ scale: 0.98 }}
         onClick={handleDonate}
-        className="mt-4 w-full rounded-xl bg-[#1f7aec] py-4 text-base font-bold tracking-tight text-white transition hover:bg-[#1668d0]"
+        className="mt-4 w-full rounded-xl bg-[#1f7aec] py-4 text-base font-bold tracking-tight text-white shadow-[0_12px_30px_rgba(31,122,236,0.35)] transition-colors hover:bg-[#1668d0]"
       >
         Faire un don de {amount}€
-      </button>
+      </motion.button>
     </section>
   );
 }
