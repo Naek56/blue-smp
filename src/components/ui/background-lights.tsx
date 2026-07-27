@@ -1,27 +1,28 @@
 import { cn } from "@/lib/utils";
 
 /* ────────────────────────────────────────────────────────────────
-   BackgroundLights — fond blanc avec de douces "lumières" floutées
-   (rayons verticaux en bleu). 100% CSS, léger et fluide (pas de WebGL).
+   BackgroundLights — fond clair premium : aurores bleutées floutées
+   + rayons de lumière verticaux. 100% CSS, léger et fluide (pas de WebGL).
    ──────────────────────────────────────────────────────────────── */
 
-interface Streak {
-  left: string;
-  width: number;
-  rotate: number;
+interface Blob {
+  className: string;
   color: string;
-  opacity: number;
-  duration: number;
-  delay: number;
+  size: number;
+  anim: string;
 }
 
-const STREAKS: Streak[] = [
-  { left: "6%", width: 190, rotate: 14, color: "#bcd8ff", opacity: 0.55, duration: 15, delay: 0 },
-  { left: "22%", width: 150, rotate: -10, color: "#9fc6ff", opacity: 0.45, duration: 19, delay: 2 },
-  { left: "40%", width: 240, rotate: 8, color: "#d3e6ff", opacity: 0.5, duration: 17, delay: 1 },
-  { left: "58%", width: 170, rotate: -13, color: "#b9b0ff", opacity: 0.4, duration: 21, delay: 3 },
-  { left: "74%", width: 210, rotate: 11, color: "#8fd0ff", opacity: 0.5, duration: 16, delay: 1.5 },
-  { left: "88%", width: 160, rotate: -8, color: "#c8d9ff", opacity: 0.45, duration: 20, delay: 2.5 },
+const BLOBS: Blob[] = [
+  { className: "left-[-8%] top-[-10%]", color: "#7ec8ff", size: 620, anim: "auroraA 18s ease-in-out infinite" },
+  { className: "right-[-10%] top-[-6%]", color: "#a9d4ff", size: 560, anim: "auroraB 22s ease-in-out infinite" },
+  { className: "left-[30%] top-[18%]", color: "#b9b0ff", size: 520, anim: "auroraA 26s ease-in-out infinite 2s" },
+  { className: "right-[18%] bottom-[-12%]", color: "#8fd0ff", size: 600, anim: "auroraB 20s ease-in-out infinite 1s" },
+];
+
+const STREAKS = [
+  { left: "14%", width: 170, rotate: 14, color: "#bcd8ff", opacity: 0.5, duration: 16, delay: 0 },
+  { left: "44%", width: 210, rotate: -9, color: "#cfe0ff", opacity: 0.45, duration: 19, delay: 1.5 },
+  { left: "70%", width: 180, rotate: 12, color: "#a9c8ff", opacity: 0.5, duration: 17, delay: 0.8 },
 ];
 
 export function BackgroundLights({ className }: { className?: string }) {
@@ -29,24 +30,34 @@ export function BackgroundLights({ className }: { className?: string }) {
     <div
       aria-hidden
       className={cn(
-        "pointer-events-none absolute inset-0 overflow-hidden bg-white",
+        "pointer-events-none absolute inset-0 overflow-hidden",
         className,
       )}
+      style={{
+        background:
+          "linear-gradient(180deg, #ffffff 0%, #f3f8ff 55%, #eaf3ff 100%)",
+      }}
     >
-      {/* lueur douce en haut */}
-      <div
-        className="absolute -top-1/4 left-1/2 h-[70%] w-[120%] -translate-x-1/2 rounded-full"
-        style={{
-          background:
-            "radial-gradient(ellipse at center, rgba(190,216,255,0.55), transparent 70%)",
-          filter: "blur(40px)",
-        }}
-      />
-
-      {/* rayons de lumière verticaux et flous */}
-      {STREAKS.map((s, i) => (
+      {/* aurores floutées qui dérivent doucement */}
+      {BLOBS.map((b, i) => (
         <div
           key={i}
+          className={cn("absolute rounded-full", b.className)}
+          style={{
+            width: b.size,
+            height: b.size,
+            background: `radial-gradient(circle at center, ${b.color}, transparent 70%)`,
+            filter: "blur(90px)",
+            opacity: 0.55,
+            animation: b.anim,
+          }}
+        />
+      ))}
+
+      {/* rayons de lumière verticaux flous */}
+      {STREAKS.map((s, i) => (
+        <div
+          key={`s-${i}`}
           className="absolute -top-[20%] h-[140%]"
           style={{ left: s.left, width: s.width, transform: `rotate(${s.rotate}deg)` }}
         >
@@ -54,7 +65,7 @@ export function BackgroundLights({ className }: { className?: string }) {
             className="h-full w-full"
             style={{
               background: `linear-gradient(to bottom, transparent, ${s.color}, transparent)`,
-              filter: "blur(70px)",
+              filter: "blur(60px)",
               opacity: s.opacity,
               animation: `lightdrift ${s.duration}s ease-in-out ${s.delay}s infinite`,
             }}
@@ -62,8 +73,18 @@ export function BackgroundLights({ className }: { className?: string }) {
         </div>
       ))}
 
-      {/* léger voile pour uniformiser et garder le texte lisible */}
-      <div className="absolute inset-0 bg-white/30" />
+      {/* lueur douce en haut */}
+      <div
+        className="absolute -top-1/4 left-1/2 h-[60%] w-[110%] -translate-x-1/2 rounded-full"
+        style={{
+          background:
+            "radial-gradient(ellipse at center, rgba(255,255,255,0.7), transparent 70%)",
+          filter: "blur(30px)",
+        }}
+      />
+
+      {/* voile léger pour garder le texte lisible */}
+      <div className="absolute inset-0 bg-white/25" />
     </div>
   );
 }

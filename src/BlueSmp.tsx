@@ -22,7 +22,10 @@ export default function BlueSmp() {
       </header>
 
       {/* Hero : logo animé (flottement + halo pulsant) */}
-      <section className="relative z-10 flex min-h-[calc(100vh-6rem)] flex-col items-center justify-center px-6 text-center">
+      <section
+        id="accueil"
+        className="relative z-10 flex min-h-[calc(100vh-6rem)] scroll-mt-24 flex-col items-center justify-center px-6 text-center"
+      >
         <div className="relative">
           {/* halo pulsant derrière le logo */}
           <div

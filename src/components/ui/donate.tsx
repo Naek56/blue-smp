@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { Heart, Check, Star, Crown, Gem, Sparkles } from "lucide-react";
+import { Heart } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 /* ────────────────────────────────────────────────────────────────
@@ -13,43 +13,6 @@ import { cn } from "@/lib/utils";
 const AMOUNTS = [5, 10, 20, 50] as const;
 const GOAL = 250; // objectif mensuel (€)
 const RAISED = 180; // déjà récolté (€)
-
-const TIERS = [
-  {
-    id: "supporter",
-    name: "Supporter",
-    price: 5,
-    icon: Star,
-    perks: ["Rôle Discord Supporter", "Couleur de pseudo", "Merci en jeu"],
-    popular: false,
-  },
-  {
-    id: "vip",
-    name: "VIP",
-    price: 15,
-    icon: Crown,
-    perks: [
-      "Tous les avantages Supporter",
-      "Kit VIP exclusif",
-      "Accès /hat & /nick",
-      "File d'attente prioritaire",
-    ],
-    popular: true,
-  },
-  {
-    id: "legende",
-    name: "Légende",
-    price: 30,
-    icon: Gem,
-    perks: [
-      "Tous les avantages VIP",
-      "Particules exclusives",
-      "Pet cosmétique unique",
-      "Badge Légende à vie",
-    ],
-    popular: false,
-  },
-];
 
 export function Donate({ className }: { className?: string }) {
   const [amount, setAmount] = useState<number>(10);
@@ -67,12 +30,15 @@ export function Donate({ className }: { className?: string }) {
   return (
     <section
       id="donate"
-      className={cn("relative mx-auto w-full max-w-6xl px-6 pb-28", className)}
+      className={cn(
+        "relative mx-auto w-full max-w-3xl scroll-mt-24 px-6 pb-28",
+        className,
+      )}
     >
       {/* halo lumineux pulsant derrière le panneau */}
       <div
         aria-hidden
-        className="pointer-events-none absolute left-1/2 top-1/2 -z-0 h-[520px] w-[520px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[#3f8cff]/25 blur-[120px]"
+        className="pointer-events-none absolute left-1/2 top-1/2 -z-0 h-[460px] w-[460px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[#3f8cff]/25 blur-[120px]"
         style={{ animation: "glowpulse 5s ease-in-out infinite" }}
       />
 
@@ -125,7 +91,7 @@ export function Donate({ className }: { className?: string }) {
         </div>
 
         {/* sélecteur de montant + bouton */}
-        <div className="mx-auto mb-14 max-w-2xl">
+        <div className="mx-auto max-w-2xl">
           <div className="mb-4 grid grid-cols-2 gap-3 sm:grid-cols-4">
             {AMOUNTS.map((a) => {
               const active = !custom && amount === a;
@@ -143,13 +109,6 @@ export function Donate({ className }: { className?: string }) {
                       : "border-black/10 bg-white/70 text-neutral-800 hover:border-[#3f8cff]/50 hover:bg-white",
                   )}
                 >
-                  {active && (
-                    <motion.span
-                      layoutId="amount-glow"
-                      className="absolute inset-0 -z-10 rounded-xl bg-[#3f8cff]"
-                      transition={{ type: "spring", stiffness: 380, damping: 30 }}
-                    />
-                  )}
                   {a}€
                 </button>
               );
@@ -183,84 +142,6 @@ export function Donate({ className }: { className?: string }) {
               </span>
             </motion.button>
           </div>
-        </div>
-
-        {/* paliers */}
-        <div className="grid gap-6 md:grid-cols-3">
-          {TIERS.map((tier, i) => {
-            const Icon = tier.icon;
-            return (
-              <motion.div
-                key={tier.id}
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, margin: "-60px" }}
-                transition={{ duration: 0.5, delay: 0.1 * i }}
-                whileHover={{ y: -8 }}
-                className={cn(
-                  "relative flex flex-col rounded-2xl border p-6 transition-shadow",
-                  tier.popular
-                    ? "border-[#3f8cff] bg-white/85 shadow-[0_20px_50px_rgba(63,140,255,0.28)]"
-                    : "border-black/10 bg-white/70 shadow-[0_10px_30px_rgba(0,0,0,0.06)] hover:shadow-[0_20px_44px_rgba(63,140,255,0.18)]",
-                )}
-              >
-                {tier.popular && (
-                  <span className="font-brody absolute -top-3 left-1/2 flex -translate-x-1/2 items-center gap-1 rounded-full bg-[#3f8cff] px-3 py-1 text-xs font-bold uppercase tracking-widest text-white shadow-md">
-                    <Sparkles className="h-3 w-3" /> Populaire
-                  </span>
-                )}
-
-                <div
-                  className={cn(
-                    "mb-4 inline-flex h-12 w-12 items-center justify-center rounded-xl",
-                    tier.popular
-                      ? "bg-gradient-to-br from-[#7ec8ff] to-[#1e6fd6] text-white"
-                      : "bg-[#eaf4ff] text-[#3f8cff]",
-                  )}
-                >
-                  <Icon className="h-6 w-6" />
-                </div>
-
-                <h3 className="font-brody text-xl font-bold text-neutral-900">
-                  {tier.name}
-                </h3>
-                <p className="font-brody mb-4 mt-1">
-                  <span className="text-3xl font-bold text-[#2f7ae0]">
-                    {tier.price}€
-                  </span>
-                  <span className="text-sm text-neutral-400"> / unique</span>
-                </p>
-
-                <ul className="mb-6 flex flex-1 flex-col gap-2">
-                  {tier.perks.map((perk) => (
-                    <li
-                      key={perk}
-                      className="font-brody flex items-start gap-2 text-sm text-neutral-600"
-                    >
-                      <Check className="mt-0.5 h-4 w-4 shrink-0 text-[#3f8cff]" />
-                      {perk}
-                    </li>
-                  ))}
-                </ul>
-
-                <button
-                  onClick={() => {
-                    setAmount(tier.price);
-                    setCustom("");
-                    handleDonate();
-                  }}
-                  className={cn(
-                    "font-brody rounded-xl py-3 text-sm font-bold uppercase tracking-widest transition",
-                    tier.popular
-                      ? "bg-[#3f8cff] text-white hover:bg-[#2f7ae0]"
-                      : "border border-[#3f8cff]/40 text-[#2f7ae0] hover:bg-[#eaf4ff]",
-                  )}
-                >
-                  Choisir
-                </button>
-              </motion.div>
-            );
-          })}
         </div>
       </motion.div>
     </section>
