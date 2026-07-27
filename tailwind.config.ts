@@ -35,8 +35,8 @@ export default {
         sm: "calc(var(--radius) - 4px)",
       },
       fontFamily: {
-        brody: ['"Chakra Petch"', "system-ui", "sans-serif"],
-        sans: ['"Chakra Petch"', "system-ui", "sans-serif"],
+        brody: ["Archivo", "system-ui", "sans-serif"],
+        sans: ["Archivo", "system-ui", "sans-serif"],
       },
     },
   },
