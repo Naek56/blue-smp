@@ -116,9 +116,6 @@ export function ImageCardFan({
   const selectDistance = -height * 0.5;
 
   const handCards = cards.filter((card) => card.id !== activeId);
-  const hoveredIndex = hoveredId
-    ? handCards.findIndex((card) => card.id === hoveredId)
-    : -1;
 
   // Clamp the horizontal spread so the outermost cards (including their hover
   // scale) never clip against the column edges.
@@ -137,9 +134,11 @@ export function ImageCardFan({
   const cardTransition = shouldReduceMotion
     ? { duration: 0.16, ease: "easeOut" as const }
     : {
-        damping: 30,
-        mass: 0.9,
-        stiffness: 340,
+        // Amorti plus élevé + raideur plus douce : la carte se pose vite,
+        // sans rebond, ce qui évite l'effet « qui s'agite ».
+        damping: 38,
+        mass: 0.8,
+        stiffness: 260,
         type: "spring" as const,
       };
 
@@ -148,6 +147,48 @@ export function ImageCardFan({
 
   function clearHover(id: string) {
     setHoveredId((current) => (current === id ? null : current));
+  }
+
+  // Détermine la carte survolée à partir de la POSITION DE LA SOURIS dans le
+  // conteneur (géométrie au repos), et non des événements hover d'éléments qui
+  // bougent. Cela supprime la boucle « la carte se soulève → sort du curseur →
+  // redescend → re-survol » qui faisait trembler l'éventail.
+  function updateHoverFromPointer(clientX: number, clientY: number) {
+    if (draggingRef.current) {
+      return;
+    }
+
+    const node = fanRef.current;
+    if (!node || handCards.length === 0) {
+      return;
+    }
+
+    const rect = node.getBoundingClientRect();
+    const x = clientX - rect.left;
+    const y = clientY - rect.top;
+
+    // On ne réagit que dans la bande basse où reposent les cartes de la main.
+    const bandTop = rect.height - (height + baseBottom + 12);
+    if (y < bandTop) {
+      setHoveredId((current) => (current === null ? current : null));
+      return;
+    }
+
+    const centerX = rect.width / 2;
+    let pick: string | null = null;
+    let pickIndex = -1;
+
+    // La carte visible au-dessus (z le plus haut) est celle de plus grand
+    // index dont la zone au repos couvre le curseur.
+    for (let i = 0; i < handCards.length; i++) {
+      const cardCenter = centerX + fanTransform(i, handCards.length, fanSpacing).x;
+      if (Math.abs(x - cardCenter) <= width / 2 && i > pickIndex) {
+        pickIndex = i;
+        pick = handCards[i].id;
+      }
+    }
+
+    setHoveredId((current) => (current === pick ? current : pick));
   }
 
   function selectCard(card: FanCardItem) {
@@ -194,6 +235,12 @@ export function ImageCardFan({
         className="relative w-full min-w-0 flex-1"
         ref={fanRef}
         style={{ minHeight: height * 1.78 }}
+        onPointerMove={(event) => {
+          if (event.pointerType === "mouse") {
+            updateHoverFromPointer(event.clientX, event.clientY);
+          }
+        }}
+        onPointerLeave={() => setHoveredId(null)}
       >
         {cards.map((card) => {
           const isActive = card.id === activeId;
@@ -210,17 +257,13 @@ export function ImageCardFan({
           } else {
             const fan = fanTransform(handIndex, handCards.length, fanSpacing);
             const isHovered = card.id === hoveredId;
-            // Neighbours step aside, and the push falls off with distance.
-            const neighborShift =
-              hoveredIndex !== -1 && !isHovered
-                ? (Math.sign(handIndex - hoveredIndex) * width * 0.14) /
-                  Math.max(1, Math.abs(handIndex - hoveredIndex))
-                : 0;
+            // Les voisines ne se décalent plus (source d'agitation quand on
+            // balaie l'éventail) : seule la carte survolée réagit.
 
             target = {
               rotate: isHovered ? fan.rotate * 0.55 : fan.rotate,
               scale: isHovered ? HAND_SCALE * 1.08 : HAND_SCALE,
-              x: fan.x + neighborShift,
+              x: fan.x,
               // Lift to a constant height so hovered cards fully clear the
               // bottom edge no matter how far they droop along the arc.
               y: isHovered ? -hoverLift : fan.y,
@@ -273,12 +316,6 @@ export function ImageCardFan({
                   draggingRef.current = true;
                 }}
                 onFocus={() => {
-                  if (!isActive) {
-                    setHoveredId(card.id);
-                  }
-                }}
-                onHoverEnd={() => clearHover(card.id)}
-                onHoverStart={() => {
                   if (!isActive) {
                     setHoveredId(card.id);
                   }
