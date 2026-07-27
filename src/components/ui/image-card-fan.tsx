@@ -39,7 +39,7 @@ const HAND_SCALE = 0.72;
 function fanTransform(index: number, count: number, spacing: number) {
   const offset = index - (count - 1) / 2;
   // The arc keeps a constant total sweep, so a bigger hand fans tighter.
-  const stepDeg = count > 1 ? Math.min(9, 46 / (count - 1)) : 0;
+  const stepDeg = count > 1 ? Math.min(11, 54 / (count - 1)) : 0;
   const rotate = offset * stepDeg;
 
   return {
@@ -120,14 +120,15 @@ export function ImageCardFan({
   // Clamp the horizontal spread so the outermost cards (including their hover
   // scale) never clip against the column edges.
   const maxOffset = (handCards.length - 1) / 2;
-  // 0.45 covers half a hand-sized card plus the extra width a 9° tilt adds.
+  // Réserve d'un demi-carte réduite (0.34) : les cartes peuvent s'écarter un
+  // peu plus vers les bords sans se chevaucher autant.
   const halfAvailable =
-    fanWidth === null ? Number.POSITIVE_INFINITY : fanWidth / 2 - width * 0.45;
+    fanWidth === null ? Number.POSITIVE_INFINITY : fanWidth / 2 - width * 0.34;
   const fanSpacing =
     maxOffset > 0
       ? Math.min(
-          width * (handCards.length > 5 ? 0.43 : 0.52),
-          Math.max(width * 0.23, halfAvailable / maxOffset),
+          width * (handCards.length > 5 ? 0.5 : 0.66),
+          Math.max(width * 0.28, halfAvailable / maxOffset),
         )
       : 0;
 
